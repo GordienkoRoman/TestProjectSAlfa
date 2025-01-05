@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.parcelize)
+    alias(libs.plugins.kapt)
 }
 
 android {
@@ -40,7 +42,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.8"
     }
     packaging {
         resources {
@@ -66,4 +68,14 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    implementation(libs.dagger.core)
+    kapt(libs.dagger.compiler)
+
+    implementation (libs.androidx.room.runtime)
+    implementation(libs.room.core)
+    kapt(libs.room.compiler)
+
+    implementation(libs.retorfit.core)
+    implementation(libs.retorfit.gsonConverter)
 }
