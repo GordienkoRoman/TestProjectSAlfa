@@ -56,6 +56,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
+    implementation(libs.lifecycle.viewmodel)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
@@ -78,4 +79,7 @@ dependencies {
 
     implementation(libs.retorfit.core)
     implementation(libs.retorfit.gsonConverter)
+
+    implementation(libs.moshi)
+    kapt(libs.moshi.kotlin.codegen)
 }

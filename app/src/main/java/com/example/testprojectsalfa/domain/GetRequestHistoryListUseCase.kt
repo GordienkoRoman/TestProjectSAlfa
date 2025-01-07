@@ -1,6 +1,8 @@
 package com.example.testprojectsalfa.domain
 
-class getRequestHistoryListUseCase(val binRepository: BinRepository) {
+import javax.inject.Inject
+
+class GetRequestHistoryListUseCase(private val binRepository: BinRepository) {
     fun getRequestHistoryList(): List<BankCard> {
         return binRepository.getRequestHistoryList()
     }

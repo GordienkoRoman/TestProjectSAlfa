@@ -1,6 +1,8 @@
 package com.example.testprojectsalfa.domain
 
-class saveBankCardUseCase(val binRepository: BinRepository) {
+import javax.inject.Inject
+
+class SaveBankCardUseCase (private val binRepository: BinRepository) {
     fun saveBankCard(){
         binRepository.saveBankCard()
     }

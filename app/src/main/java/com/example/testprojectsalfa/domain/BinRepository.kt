@@ -1,7 +1,7 @@
 package com.example.testprojectsalfa.domain
 
 interface BinRepository {
-    fun getBankCardByBin(bin:Int):BankCard
+    suspend fun getBankCardByBin(bin:String):BankCard
 
     fun getRequestHistoryList(): List<BankCard>
 
