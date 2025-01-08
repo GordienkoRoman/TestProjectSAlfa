@@ -13,7 +13,7 @@ import javax.inject.Inject
 class MainScreenViewModel @Inject constructor(
     private val getBankCardByBinUseCase: GetBankCardByBinUseCase,
     private val saveBankCardUseCase: SaveBankCardUseCase,
-    private val getRequestHistoryListUseCase: GetRequestHistoryListUseCase
+    private val getRequestHistoryListUseCase: GetRequestHistoryListUseCase,
 ) : ViewModel() {
 
     val screenState = MutableStateFlow(ScreenState.Initial as ScreenState)
@@ -21,12 +21,13 @@ class MainScreenViewModel @Inject constructor(
 
     suspend fun getBankCardByBin(bin: String = "45717360") {
         viewModelScope.launch {
-          val bankCard = getBankCardByBinUseCase(bin)
+            val bankCard = getBankCardByBinUseCase(bin)
             saveBankCardUseCase(bankCard)
             screenState.emit(ScreenState.Loaded(bankCard))
         }
     }
-    suspend fun getRequestHistoryList() : List<BankCard>{
+
+    suspend fun getRequestHistoryList(): List<BankCard> {
         return getRequestHistoryListUseCase()
     }
 }
