@@ -31,7 +31,7 @@ class BinRepositoryImpl @Inject constructor(
                     val moshi = Moshi.Builder()
                         .add(KotlinJsonAdapterFactory()).build()
                     val jsonAdapterResponse = moshi.adapter(BankCardDto::class.java)
-                    val jsonResponse = jsonAdapterResponse.fromJson(responseData)
+                    val jsonResponse = jsonAdapterResponse.fromJson(responseData.toString())
                     bankCard =
                         jsonResponse?.let { mapper.mapDtoToEntity(it,bin) } ?: throw IOException()
                     return@withContext bankCard

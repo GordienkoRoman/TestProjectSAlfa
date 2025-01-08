@@ -14,7 +14,6 @@ moshi = "1.14.0"
 moshiKotlinCodegen = "1.11.0"
 retrofit = "2.9.0"
 room = "2.6.1"
-kotlinx = "1.7.3"
 navigation = "2.8.5"
 
 [libraries]
@@ -42,8 +41,6 @@ dagger-core = { group = "com.google.dagger", name = "dagger", version.ref = "dag
 dagger-compiler = { group = "com.google.dagger", name = "dagger-compiler", version.ref = "dagger" }
 retorfit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retorfit-gsonConverter = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
-coroutines = {group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android",version.ref = "kotlinx"}
-coroutines-core = {group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core",version.ref = "kotlinx"}
 lifecycle-viewmodel = { group = "androidx.lifecycle",name = "lifecycle-viewmodel-compose",version.ref = "lifecycleRuntimeKtx"}
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
