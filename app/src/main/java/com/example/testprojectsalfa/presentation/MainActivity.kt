@@ -4,7 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -33,7 +35,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            var list: List<BankCard> = mutableListOf()
+            val list : MutableState<List<BankCard>> = rememberSaveable {
+                mutableStateOf(listOf())
+            } //Не лучшее решение, но простое
             val navController: NavHostController = rememberNavController()
             TestProjectSAlfaTheme {
                 NavHost(
@@ -47,7 +51,7 @@ class MainActivity : ComponentActivity() {
                         MainScreen(
                             viewModelFactory,
                             onHistoryRequestClick = {
-                                list = it
+                                list.value = it
                                 navController.navigate("list")
                             })
                     }

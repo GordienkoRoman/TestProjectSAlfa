@@ -1,7 +1,11 @@
 package com.example.testprojectsalfa.presentation.mainScreen
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -24,17 +28,18 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.testprojectsalfa.di.viewModelFactory.ViewModelFactory
 import com.example.testprojectsalfa.domain.BankCard
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import okhttp3.OkHttpClient
 
 
 @Composable
@@ -136,29 +141,29 @@ fun BinTextField(modifier: Modifier, bin: MutableState<String>) {
 
 @Composable
 fun BankCardInfo(bankCard: BankCard) {
+    val context = LocalContext.current
     Text(text = bankCard.country)
-    Text(text = bankCard.coordinates.latitude)
-    Text(text = bankCard.coordinates.longitude)
+    Row(modifier = Modifier.clickable {
+        val gmmIntentUri =
+            Uri.parse("geo:${bankCard.coordinates.latitude},${bankCard.coordinates.longitude}")
+        val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+        mapIntent.setPackage("com.google.android.apps.maps")
+        startActivity(context, mapIntent, null)
+     }) {
+        Text(text = bankCard.coordinates.latitude)
+        Text(text = bankCard.coordinates.longitude)
+    }
     Text(text = bankCard.cardType)
     Text(text = "Bank")
     Text(text = bankCard.bankInfo.name)
-    Text(text = bankCard.bankInfo.url)
+    Text(modifier = Modifier.clickable{
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(bankCard.bankInfo.url))
+        startActivity(context,browserIntent,null)
+    },text = bankCard.bankInfo.url)
     Text(text = bankCard.bankInfo.city)
-    Text(text = bankCard.bankInfo.phone)
+    Text(modifier = Modifier.clickable {
+        val call = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${bankCard.bankInfo.phone}"))
+        startActivity(context, call, null)
+    },text = bankCard.bankInfo.phone)
 }
 
-//    //Не правильно показывает, мб данные некорректные на сайте.
-//    val gmmIntentUri =
-//        Uri.parse("geo:${user.coordinates.latitude},${user.coordinates.longitude}")
-//    val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
-//    mapIntent.setPackage("com.google.android.apps.maps")
-//    startActivity(context, mapIntent, null)
-//}
-//val call = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${user.number}"))
-//startActivity(context, call, null)
-//val intent = Intent(Intent.ACTION_SENDTO).apply {
-//    data = Uri.parse("mailto:") // Only email apps handle this.
-//    putExtra(Intent.EXTRA_SUBJECT, "Hi ${user.name},")
-//    putExtra(Intent.EXTRA_EMAIL, arrayOf(user.mail))
-//}
-//startActivity(context, intent, null)

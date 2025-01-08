@@ -1,15 +1,13 @@
 package com.example.testprojectsalfa.presentation.mainScreen
 
-import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.testprojectsalfa.domain.BankCard
-import com.example.testprojectsalfa.domain.GetBankCardByBinUseCase
-import com.example.testprojectsalfa.domain.GetRequestHistoryListUseCase
-import com.example.testprojectsalfa.domain.SaveBankCardUseCase
+import com.example.testprojectsalfa.domain.usecases.GetBankCardByBinUseCase
+import com.example.testprojectsalfa.domain.usecases.GetRequestHistoryListUseCase
+import com.example.testprojectsalfa.domain.usecases.SaveBankCardUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import okhttp3.OkHttpClient
 import javax.inject.Inject
 
 class MainScreenViewModel @Inject constructor(
