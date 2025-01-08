@@ -2,6 +2,7 @@ package com.example.testprojectsalfa.presentation.mainScreen
 
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -32,6 +33,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.text.isDigitsOnly
@@ -84,6 +86,7 @@ fun MainScreen(
             }
 
             is ScreenState.Error -> {
+                Toast.makeText(LocalContext.current, currentState.e, Toast.LENGTH_SHORT).show()
                 CircularProgressIndicator(
                     color = MaterialTheme.colorScheme.background
                 )
@@ -142,28 +145,32 @@ fun BinTextField(modifier: Modifier, bin: MutableState<String>) {
 @Composable
 fun BankCardInfo(bankCard: BankCard) {
     val context = LocalContext.current
-    Text(text = bankCard.country)
+    Text(text = "Country:${bankCard.country}")
     Row(modifier = Modifier.clickable {
         val gmmIntentUri =
             Uri.parse("geo:${bankCard.coordinates.latitude},${bankCard.coordinates.longitude}")
         val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
         mapIntent.setPackage("com.google.android.apps.maps")
-        startActivity(context, mapIntent, null)
+            startActivity(context, mapIntent, null)
      }) {
-        Text(text = bankCard.coordinates.latitude)
-        Text(text = bankCard.coordinates.longitude)
+        Text(text = "Coordinates:${bankCard.coordinates.latitude},${bankCard.coordinates.longitude}", textDecoration = TextDecoration.Underline)
     }
-    Text(text = bankCard.cardType)
-    Text(text = "Bank")
-    Text(text = bankCard.bankInfo.name)
+    Text(text = "Scheme${bankCard.cardType}")
+    Text(text = "Bank Info")
+    Text(text = "Name:${bankCard.bankInfo.name}")
     Text(modifier = Modifier.clickable{
         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(bankCard.bankInfo.url))
-        startActivity(context,browserIntent,null)
-    },text = bankCard.bankInfo.url)
-    Text(text = bankCard.bankInfo.city)
+        try {
+            startActivity(context,browserIntent,null)
+        }
+        catch (_: Exception){
+            Toast.makeText(context,"Incorrect url",Toast.LENGTH_SHORT).show()
+        }
+    },text = "URL:${bankCard.bankInfo.url}", textDecoration = TextDecoration.Underline)
+    Text(text = "City:${bankCard.bankInfo.city}")
     Text(modifier = Modifier.clickable {
         val call = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${bankCard.bankInfo.phone}"))
         startActivity(context, call, null)
-    },text = bankCard.bankInfo.phone)
+    },text = "Phone:${bankCard.bankInfo.phone}", textDecoration = TextDecoration.Underline)
 }
 

@@ -1,5 +1,6 @@
 package com.example.testprojectsalfa.data
 
+import android.content.Context
 import com.example.testprojectsalfa.data.local.dao.BankCardDao
 import com.example.testprojectsalfa.data.mapper.BankCardMapper
 import com.example.testprojectsalfa.data.remote.BankCardDto
@@ -17,9 +18,9 @@ import javax.inject.Inject
 class BinRepositoryImpl @Inject constructor(
     private val bankCardDao: BankCardDao,
     private val mapper: BankCardMapper,
+    val context: Context,
 ) : BinRepository {
-    override suspend fun getBankCardByBin(bin: String): BankCard {
-        var bankCard = BankCard(bin)
+    override suspend fun getBankCardByBin(bin: String): BankCard? {
         withContext(Dispatchers.IO) {
             try {
                 val request = Request.Builder()
@@ -32,23 +33,23 @@ class BinRepositoryImpl @Inject constructor(
                         .add(KotlinJsonAdapterFactory()).build()
                     val jsonAdapterResponse = moshi.adapter(BankCardDto::class.java)
                     val jsonResponse = jsonAdapterResponse.fromJson(responseData.toString())
-                    bankCard =
-                        jsonResponse?.let { mapper.mapDtoToEntity(it,bin) } ?: throw IOException()
+                    val bankCard =
+                        jsonResponse?.let { mapper.mapDtoToEntity(it, bin) } ?: throw IOException()
                     return@withContext bankCard
                 } else {
-
+                    throw Exception("HTTP ${response.code()}")
                 }
             } catch (e: Exception) {
-                e.printStackTrace()
+                throw Exception(e)
+
             }
         }
-        return bankCard
-
+        return null
     }
 
 
     override suspend fun getRequestHistoryList(): List<BankCard> {
-         return bankCardDao.getBankCards().map { mapper.mapDbModelToEntity(it) }
+        return bankCardDao.getBankCards().map { mapper.mapDbModelToEntity(it) }
     }
 
     override suspend fun saveBankCard(bankCard: BankCard) {

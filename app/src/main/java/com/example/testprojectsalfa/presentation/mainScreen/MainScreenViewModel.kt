@@ -8,6 +8,7 @@ import com.example.testprojectsalfa.domain.usecases.GetRequestHistoryListUseCase
 import com.example.testprojectsalfa.domain.usecases.SaveBankCardUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import java.io.IOException
 import javax.inject.Inject
 
 class MainScreenViewModel @Inject constructor(
@@ -21,9 +22,15 @@ class MainScreenViewModel @Inject constructor(
 
     suspend fun getBankCardByBin(bin: String = "45717360") {
         viewModelScope.launch {
-            val bankCard = getBankCardByBinUseCase(bin)
-            saveBankCardUseCase(bankCard)
-            screenState.emit(ScreenState.Loaded(bankCard))
+            try {
+                val bankCard = getBankCardByBinUseCase(bin) ?: throw IOException()
+                saveBankCardUseCase(bankCard)
+                screenState.emit(ScreenState.Loaded(bankCard))
+            }
+            catch (e:Exception)
+            {
+                screenState.emit(ScreenState.Error(e.message.toString()))
+            }
         }
     }
 
