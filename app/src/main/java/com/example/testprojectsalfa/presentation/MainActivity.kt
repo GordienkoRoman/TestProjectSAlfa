@@ -4,9 +4,17 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.testprojectsalfa.BaseApplication
 import com.example.testprojectsalfa.di.viewModelFactory.ViewModelFactory
+import com.example.testprojectsalfa.domain.BankCard
 import com.example.testprojectsalfa.presentation.mainScreen.MainScreen
+import com.example.testprojectsalfa.presentation.requestHistoryListScreen.RequestHistoryListScreen
 import com.example.testprojectsalfa.ui.theme.TestProjectSAlfaTheme
 import javax.inject.Inject
 
@@ -25,8 +33,28 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            var list: List<BankCard> = mutableListOf()
+            val navController: NavHostController = rememberNavController()
             TestProjectSAlfaTheme {
-                MainScreen(viewModelFactory)
+                NavHost(
+                    modifier = Modifier,
+                    navController = navController,
+                    startDestination = "mainscreen",
+                    route = "maingraph"
+                )
+                {
+                    composable(route = "mainscreen") {
+                        MainScreen(
+                            viewModelFactory,
+                            onHistoryRequestClick = {
+                                list = it
+                                navController.navigate("list")
+                            })
+                    }
+                    composable("list", arguments = listOf()) {
+                        RequestHistoryListScreen(requestHistoryList = list)
+                    }
+                }
             }
         }
     }

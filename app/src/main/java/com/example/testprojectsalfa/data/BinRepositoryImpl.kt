@@ -1,9 +1,10 @@
 package com.example.testprojectsalfa.data
 
+import com.example.testprojectsalfa.data.local.dao.BankCardDao
+import com.example.testprojectsalfa.data.mapper.BankCardMapper
 import com.example.testprojectsalfa.data.remote.BankCardDto
 import com.example.testprojectsalfa.domain.BankCard
 import com.example.testprojectsalfa.domain.BinRepository
-import com.example.testprojectsalfa.presentation.mainScreen.ScreenState
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.Dispatchers
@@ -13,9 +14,12 @@ import okhttp3.Request
 import java.io.IOException
 import javax.inject.Inject
 
-class BinRepositoryImpl @Inject constructor() : BinRepository {
+class BinRepositoryImpl @Inject constructor(
+    private val bankCardDao: BankCardDao,
+    private val mapper: BankCardMapper,
+) : BinRepository {
     override suspend fun getBankCardByBin(bin: String): BankCard {
-        var bankCard = BankCard()
+        var bankCard = BankCard(bin)
         withContext(Dispatchers.IO) {
             try {
                 val request = Request.Builder()
@@ -29,10 +33,9 @@ class BinRepositoryImpl @Inject constructor() : BinRepository {
                     val jsonAdapterResponse = moshi.adapter(BankCardDto::class.java)
                     val jsonResponse = jsonAdapterResponse.fromJson(responseData)
                     bankCard =
-                        jsonResponse?.let { BankCard.mapToBankCard(it) } ?: throw IOException()
+                        jsonResponse?.let { mapper.mapDtoToEntity(it,bin) } ?: throw IOException()
                     return@withContext bankCard
-                }
-                else{
+                } else {
 
                 }
             } catch (e: Exception) {
@@ -44,11 +47,11 @@ class BinRepositoryImpl @Inject constructor() : BinRepository {
     }
 
 
-    override fun getRequestHistoryList(): List<BankCard> {
-        TODO("Not yet implemented")
+    override suspend fun getRequestHistoryList(): List<BankCard> {
+         return bankCardDao.getBankCards().map { mapper.mapDbModelToEntity(it) }
     }
 
-    override fun saveBankCard() {
-        TODO("Not yet implemented")
+    override suspend fun saveBankCard(bankCard: BankCard) {
+        bankCardDao.insertBankCard(mapper.mapEntityToDbModel(bankCard))
     }
 }

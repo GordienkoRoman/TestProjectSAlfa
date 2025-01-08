@@ -24,7 +24,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -34,20 +33,23 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.testprojectsalfa.di.viewModelFactory.ViewModelFactory
 import com.example.testprojectsalfa.domain.BankCard
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 
+
 @Composable
-fun MainScreen(viewModelFactory: ViewModelFactory) {
+fun MainScreen(
+    viewModelFactory: ViewModelFactory,
+    onHistoryRequestClick: (List<BankCard>) -> Unit,
+) {
 
     val viewModel: MainScreenViewModel = viewModel(factory = viewModelFactory)
     val screenState = viewModel.screenState.collectAsState(ScreenState.Initial)
 
     val coroutineScope = rememberCoroutineScope()
-    val client = OkHttpClient()
     val bin = rememberSaveable {
         mutableStateOf("")
     }
-
     Column(
         modifier = Modifier
             .background(Color.White)
@@ -63,7 +65,7 @@ fun MainScreen(viewModelFactory: ViewModelFactory) {
         )
         Button(onClick = {
             coroutineScope.async {
-                viewModel.test2(client, bin.value)
+                viewModel.getBankCardByBin(bin.value)
             }
         }, enabled = bin.value.length in 6..8) {
             Text(text = "Lookup")
@@ -71,15 +73,28 @@ fun MainScreen(viewModelFactory: ViewModelFactory) {
         when (val currentState = screenState.value) {
             ScreenState.Initial -> {}
             ScreenState.Loading -> {
-            CircularProgressIndicator(
-                color = MaterialTheme.colorScheme.background
-            )
+                CircularProgressIndicator(
+                    color = MaterialTheme.colorScheme.background
+                )
             }
 
-            is ScreenState.Error -> TODO()
+            is ScreenState.Error -> {
+                CircularProgressIndicator(
+                    color = MaterialTheme.colorScheme.background
+                )
+            }
+
             is ScreenState.Loaded -> {
                 BankCardInfo(bankCard = currentState.bankCard)
             }
+        }
+        Button(onClick = {
+            coroutineScope.launch {
+                val list = viewModel.getRequestHistoryList()
+                onHistoryRequestClick(list)
+            }
+        }) {
+            Text(text = "Reuest history")
         }
     }
 }
@@ -120,7 +135,7 @@ fun BinTextField(modifier: Modifier, bin: MutableState<String>) {
 }
 
 @Composable
-fun BankCardInfo(bankCard: BankCard){
+fun BankCardInfo(bankCard: BankCard) {
     Text(text = bankCard.country)
     Text(text = bankCard.coordinates.latitude)
     Text(text = bankCard.coordinates.longitude)

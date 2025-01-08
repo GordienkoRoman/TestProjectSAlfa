@@ -82,4 +82,6 @@ dependencies {
 
     implementation(libs.moshi)
     kapt(libs.moshi.kotlin.codegen)
+
+    implementation(libs.navigation)
 }
