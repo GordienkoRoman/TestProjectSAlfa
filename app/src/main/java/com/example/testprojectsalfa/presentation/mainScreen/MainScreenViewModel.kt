@@ -8,7 +8,6 @@ import com.example.testprojectsalfa.domain.usecases.GetRequestHistoryListUseCase
 import com.example.testprojectsalfa.domain.usecases.SaveBankCardUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import java.io.IOException
 import javax.inject.Inject
 
 class MainScreenViewModel @Inject constructor(
