@@ -102,7 +102,7 @@ fun MainScreen(
                 onHistoryRequestClick(list)
             }
         }) {
-            Text(text = "Reuest history")
+            Text(text = "Request history")
         }
     }
 }

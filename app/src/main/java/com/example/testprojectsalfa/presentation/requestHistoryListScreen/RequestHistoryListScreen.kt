@@ -4,7 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,12 +23,14 @@ fun RequestHistoryListScreen(requestHistoryList: MutableState<List<BankCard>>) {
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.primary)
-            .navigationBarsPadding(),
+            .navigationBarsPadding()
+            .padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         items(requestHistoryList.value.size)
         {
-            Text(text = requestHistoryList.value[it].bin)
+            Text(text = requestHistoryList.value[it].toString())
+            HorizontalDivider(thickness = 5.dp)
         }
     }
 }

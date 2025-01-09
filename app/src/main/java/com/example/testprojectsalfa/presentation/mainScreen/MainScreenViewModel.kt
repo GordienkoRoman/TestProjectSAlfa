@@ -20,10 +20,10 @@ class MainScreenViewModel @Inject constructor(
     val screenState = MutableStateFlow(ScreenState.Initial as ScreenState)
 
 
-    suspend fun getBankCardByBin(bin: String = "45717360") {
+    suspend fun getBankCardByBin(bin: String) {
         viewModelScope.launch {
             try {
-                val bankCard = getBankCardByBinUseCase(bin) ?: throw IOException()
+                val bankCard = getBankCardByBinUseCase(bin)
                 saveBankCardUseCase(bankCard)
                 screenState.emit(ScreenState.Loaded(bankCard))
             }

@@ -20,8 +20,8 @@ class BinRepositoryImpl @Inject constructor(
     private val mapper: BankCardMapper,
     val context: Context,
 ) : BinRepository {
-    override suspend fun getBankCardByBin(bin: String): BankCard? {
-        withContext(Dispatchers.IO) {
+    override suspend fun getBankCardByBin(bin: String): BankCard {
+        return withContext(Dispatchers.IO) {
             try {
                 val request = Request.Builder()
                     .url("https://lookup.binlist.net/$bin")
@@ -41,10 +41,8 @@ class BinRepositoryImpl @Inject constructor(
                 }
             } catch (e: Exception) {
                 throw Exception(e)
-
             }
         }
-        return null
     }
 
 
